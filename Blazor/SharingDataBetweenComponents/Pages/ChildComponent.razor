@@ -1,0 +1,20 @@
+@using SharingDataBetweenComponents.Data
+
+<h4>This is the child component</h4>
+
+@if (Wf is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <ul>
+        <li>@Wf.TemperatureF</li>
+        <li>@Wf.TemperatureC</li>
+    </ul>
+}
+
+@code {
+    [Parameter]
+    public WeatherForecast? Wf { get; set; }
+}

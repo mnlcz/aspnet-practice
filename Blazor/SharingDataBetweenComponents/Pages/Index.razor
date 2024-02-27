@@ -1,0 +1,64 @@
+﻿@page "/"
+@using SharingDataBetweenComponents.Data
+@inject WeatherForecastService ForecastService
+
+
+<PageTitle>Component Sharing</PageTitle>
+
+<h1>This is the parent component</h1>
+
+<p>
+    Here is how parent-child components communicate. The model is passed by <b>component parameters</b>. This way:
+</p>
+
+<pre><code>
+@@code {
+    [Parameter]
+    public WeatherForecast? Wf { get; set; }
+}
+</code></pre>
+
+<p>
+    And its called like a regular HTML tag, with an attribute named, in this case: <code>Wf</code>.
+</p>
+
+@if (forecasts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <ChildComponent Wf="@(forecasts[0])" />
+}
+
+<p>
+    For cases with a deep hierarchy of children, the data is shared using <b>cascading parameters</b>. Like this:
+</p>
+
+<pre><code>
+@@code {
+    [CascadingParameter(Name="Wf")]
+    public WeatherForecast? Wf { get; set; }
+}
+</code></pre>
+
+<p>
+    And its used like this:
+</p>
+
+<pre><code>
+&lt;CascadingValue Name="Wf" Value="@@(forecasts[0])"&gt;
+    &lt;!-- Any descendant component rendered here will be able to access the cascading value. --&gt;
+&lt;/CascadingValue&gt;
+</code></pre>
+
+
+
+@code {
+    private WeatherForecast[]? forecasts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        forecasts = await ForecastService.GetForecastAsync(DateOnly.FromDateTime(DateTime.Now));
+    }
+}
