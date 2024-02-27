@@ -1,0 +1,44 @@
+﻿#foto {
+    width: 300px;
+    margin: 2rem 0;
+    border-radius: 50%;
+}
+
+#foto-dotnet {
+    width: 250px;
+    border-radius: 10px 10px 0 0;
+}
+
+.descripcion {
+    background-color: #4832dd;
+}
+
+.seccion-bienvenida {
+    margin: 5rem 0 10rem 0;
+    color: white;
+}
+
+.seccion-bienvenida h1 {
+    margin-bottom: 1rem;
+}
+
+.seccion-bienvenida p {
+    font-family: sans-serif;
+    line-height: 1.5;
+    font-size: 1.25rem;
+}
+
+.cabecera {
+    font-weight: bold;
+    margin: 2rem;
+}
+
+.habilidades ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.habilidades i {
+    color: #4832dd;
+    font-size: 50px;
+}
