@@ -1,0 +1,34 @@
+@WebAPIAutores_HostAddress = http://localhost:5142
+
+GET {{WebAPIAutores_HostAddress}}/api/autores
+Accept: application/json
+
+###
+
+@nombre = "Cristiano Ronaldo"
+
+POST {{WebAPIAutores_HostAddress}}/api/autores
+Content-Type: application/json
+
+{
+    "nombre": {{nombre}}
+}
+
+###
+
+@id = 2
+@nombre = "Cristiano Ronaldo"
+
+PUT {{WebAPIAutores_HostAddress}}/api/autores/{{id}}
+Content-Type: application/json
+
+{
+    "id": {{id}},
+    "nombre": {{nombre}}
+}
+
+###
+
+@id = 3
+
+DELETE {{WebAPIAutores_HostAddress}}/api/autores/{{id}}
