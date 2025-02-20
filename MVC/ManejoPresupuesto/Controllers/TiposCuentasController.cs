@@ -1,5 +1,4 @@
-﻿using Dapper;
-using ManejoPresupuesto.Models;
+﻿using ManejoPresupuesto.Models;
 using ManejoPresupuesto.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +7,15 @@ namespace ManejoPresupuesto.Controllers;
 public class TiposCuentasController(IRepositorioTiposCuentas repositorioTiposCuentas) : Controller
 {
     private readonly IRepositorioTiposCuentas _repositorioTiposCuentas = repositorioTiposCuentas;
+
+    [HttpGet]
+    public async Task<IActionResult> Index()
+    {
+        var usuarioId = 1;
+        var tiposCuentas = await _repositorioTiposCuentas.Obtener(usuarioId);
+
+        return View(tiposCuentas);
+    }
 
     [HttpGet]
     public IActionResult Crear()
@@ -36,6 +44,20 @@ public class TiposCuentasController(IRepositorioTiposCuentas repositorioTiposCue
 
         await _repositorioTiposCuentas.Crear(tipoCuenta);
 
-        return View();
+        return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> VerificarExisteTipoCuenta(string nombre)
+    {
+        var usuarioId = 1;
+        var yaExisteTipoCuenta = await _repositorioTiposCuentas.Existe(nombre, usuarioId);
+
+        if (yaExisteTipoCuenta)
+        {
+            return Json($"El nombre {nombre} ya existe.");
+        }
+
+        return Json(true);
     }
 }

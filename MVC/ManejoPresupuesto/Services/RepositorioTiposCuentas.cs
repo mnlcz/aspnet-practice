@@ -29,4 +29,13 @@ public class RepositorioTiposCuentas(IConfiguration configuration) : IRepositori
 
         return existe == 1;
     }
+
+    public async Task<IEnumerable<TipoCuenta>> Obtener(int usuarioId)
+    {
+        using var connection = new SqlConnection(_connectionString);
+
+        return await connection.QueryAsync<TipoCuenta>("""
+            SELECT Id, Nombre, UsuarioId, Orden FROM TiposCuentas WHERE UsuarioId = @UsuarioId;
+            """, new { usuarioId });
+    }
 }
