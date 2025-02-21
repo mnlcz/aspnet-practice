@@ -1,17 +1,12 @@
-using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
 using ManejoPresupuesto.Models;
+using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace ManejoPresupuesto.Controllers;
 
-public class HomeController : Controller
+public class HomeController(ILogger<HomeController> logger) : Controller
 {
-    private readonly ILogger<HomeController> _logger;
-
-    public HomeController(ILogger<HomeController> logger)
-    {
-        _logger = logger;
-    }
+    private readonly ILogger<HomeController> _logger = logger;
 
     public IActionResult Index()
     {
@@ -19,6 +14,11 @@ public class HomeController : Controller
     }
 
     public IActionResult Privacy()
+    {
+        return View();
+    }
+
+    public IActionResult NoEncontrado()
     {
         return View();
     }

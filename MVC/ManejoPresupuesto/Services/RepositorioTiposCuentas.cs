@@ -38,4 +38,22 @@ public class RepositorioTiposCuentas(IConfiguration configuration) : IRepositori
             SELECT Id, Nombre, UsuarioId, Orden FROM TiposCuentas WHERE UsuarioId = @UsuarioId;
             """, new { usuarioId });
     }
+
+    public async Task Actualizar(TipoCuenta tipoCuenta)
+    {
+        using var connection = new SqlConnection(_connectionString);
+
+        await connection.ExecuteAsync("""
+            UPDATE TiposCuentas SET Nombre = @Nombre WHERE Id = @Id;
+            """, tipoCuenta);
+    }
+
+    public async Task<TipoCuenta?> ObtenerPorId(int id, int usuarioId)
+    {
+        using var connection = new SqlConnection(_connectionString);
+
+        return await connection.QueryFirstOrDefaultAsync<TipoCuenta>("""
+            SELECT Id, Nombre, UsuarioId, Orden FROM TiposCuentas WHERE Id = @Id AND UsuarioId = @UsuarioId;
+            """, new { Id = id, UsuarioId = usuarioId });
+    }
 }
