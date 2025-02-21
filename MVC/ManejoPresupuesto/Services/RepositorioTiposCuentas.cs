@@ -56,4 +56,12 @@ public class RepositorioTiposCuentas(IConfiguration configuration) : IRepositori
             SELECT Id, Nombre, UsuarioId, Orden FROM TiposCuentas WHERE Id = @Id AND UsuarioId = @UsuarioId;
             """, new { Id = id, UsuarioId = usuarioId });
     }
+
+    public async Task Borrar(int id)
+    {
+        using var connection = new SqlConnection(_connectionString);
+        await connection.ExecuteAsync("""
+            DELETE FROM TiposCuentas WHERE Id = @Id;
+            """, new { Id = id });
+    }
 }

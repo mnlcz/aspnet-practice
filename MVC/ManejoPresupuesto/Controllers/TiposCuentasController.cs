@@ -79,6 +79,36 @@ public class TiposCuentasController(IRepositorioTiposCuentas repositorioTiposCue
     }
 
     [HttpGet]
+    public async Task<IActionResult> Borrar(int id)
+    {
+        var usuarioId = _servicioUsuarios.ObtenerUsuarioId();
+        var tipoCuenta = await _repositorioTiposCuentas.ObtenerPorId(id, usuarioId);
+
+        if (tipoCuenta is null)
+        {
+            return RedirectToAction("NoEncontrado", "Home");
+        }
+
+        return View(tipoCuenta);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> BorrarTipoCuenta(int id)
+    {
+        var usuarioId = _servicioUsuarios.ObtenerUsuarioId();
+        var tipoCuenta = await _repositorioTiposCuentas.ObtenerPorId(id, usuarioId);
+
+        if (tipoCuenta is null)
+        {
+            return RedirectToAction("NoEncontrado", "Home");
+        }
+
+        await _repositorioTiposCuentas.Borrar(id);
+
+        return RedirectToAction("Index");
+    }
+
+    [HttpGet]
     public async Task<IActionResult> VerificarExisteTipoCuenta(string nombre)
     {
         var usuarioId = _servicioUsuarios.ObtenerUsuarioId();
