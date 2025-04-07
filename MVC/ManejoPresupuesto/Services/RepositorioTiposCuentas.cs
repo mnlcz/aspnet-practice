@@ -10,58 +10,73 @@ public class RepositorioTiposCuentas(IConfiguration configuration) : IRepositori
 
     public async Task Crear(TipoCuenta tipoCuenta)
     {
-        using var connection = new SqlConnection(_connectionString);
+        await using var connection = new SqlConnection(_connectionString);
         var id = await connection.QuerySingleAsync<int>("""
-            INSERT INTO TiposCuentas (Nombre, UsuarioId, Orden)
-            VALUES (@Nombre, @UsuarioId, 0);
-            SELECT SCOPE_IDENTITY();
-            """, tipoCuenta);
+                                                        INSERT INTO TiposCuentas (Nombre, UsuarioId, Orden)
+                                                        VALUES (@Nombre, @UsuarioId, 0);
+                                                        SELECT SCOPE_IDENTITY();
+                                                        """, tipoCuenta);
 
         tipoCuenta.Id = id;
     }
 
     public async Task<bool> Existe(string nombre, int usuarioId)
     {
-        using var connection = new SqlConnection(_connectionString);
+        await using var connection = new SqlConnection(_connectionString);
         var existe = await connection.QueryFirstOrDefaultAsync<int>("""
-            SELECT 1 FROM TiposCuentas WHERE Nombre = @Nombre AND UsuarioId = @UsuarioId;
-            """, new { Nombre = nombre, UsuarioId = usuarioId });
+                                                                    SELECT 1
+                                                                    FROM TiposCuentas 
+                                                                    WHERE Nombre = @Nombre AND UsuarioId = @UsuarioId;
+                                                                    """,
+            new { Nombre = nombre, UsuarioId = usuarioId });
 
         return existe == 1;
     }
 
     public async Task<IEnumerable<TipoCuenta>> Obtener(int usuarioId)
     {
-        using var connection = new SqlConnection(_connectionString);
+        await using var connection = new SqlConnection(_connectionString);
 
         return await connection.QueryAsync<TipoCuenta>("""
-            SELECT Id, Nombre, UsuarioId, Orden FROM TiposCuentas WHERE UsuarioId = @UsuarioId;
-            """, new { usuarioId });
+                                                       SELECT Id, Nombre, UsuarioId, Orden 
+                                                       FROM TiposCuentas 
+                                                       WHERE UsuarioId = @UsuarioId
+                                                       ORDER BY Orden;
+                                                       """, new { usuarioId });
     }
 
     public async Task Actualizar(TipoCuenta tipoCuenta)
     {
-        using var connection = new SqlConnection(_connectionString);
+        await using var connection = new SqlConnection(_connectionString);
 
         await connection.ExecuteAsync("""
-            UPDATE TiposCuentas SET Nombre = @Nombre WHERE Id = @Id;
-            """, tipoCuenta);
+                                      UPDATE TiposCuentas
+                                      SET Nombre = @Nombre
+                                      WHERE Id = @Id;
+                                      """, tipoCuenta);
     }
 
     public async Task<TipoCuenta?> ObtenerPorId(int id, int usuarioId)
     {
-        using var connection = new SqlConnection(_connectionString);
+        await using var connection = new SqlConnection(_connectionString);
 
         return await connection.QueryFirstOrDefaultAsync<TipoCuenta>("""
-            SELECT Id, Nombre, UsuarioId, Orden FROM TiposCuentas WHERE Id = @Id AND UsuarioId = @UsuarioId;
-            """, new { Id = id, UsuarioId = usuarioId });
+                                                                     SELECT Id, Nombre, UsuarioId, Orden
+                                                                     FROM TiposCuentas
+                                                                     WHERE Id = @Id AND UsuarioId = @UsuarioId;
+                                                                     """, new { Id = id, UsuarioId = usuarioId });
     }
 
     public async Task Borrar(int id)
     {
-        using var connection = new SqlConnection(_connectionString);
-        await connection.ExecuteAsync("""
-            DELETE FROM TiposCuentas WHERE Id = @Id;
-            """, new { Id = id });
+        await using var connection = new SqlConnection(_connectionString);
+        await connection.ExecuteAsync("DELETE FROM TiposCuentas WHERE Id = @Id;", new { Id = id });
+    }
+
+    public async Task Ordenar(IEnumerable<TipoCuenta> tipoCuentasOrdenados)
+    {
+        var query = "UPDATE TiposCuentas SET Orden = @Orden WHERE Id = @Id;";
+        await using var connection = new SqlConnection(_connectionString);
+        await connection.ExecuteAsync(query, tipoCuentasOrdenados);
     }
 }
